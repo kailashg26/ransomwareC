@@ -92,7 +92,7 @@ void localedir(char *nome_diretorio){
 		if(strncmp(getdir->d_name, ".", sizeof(getdir->d_name)) == 0 || 
 		strncmp(getdir->d_name, "..", sizeof(getdir->d_name)) == 0) continue;
 		
-		//A funçao isFile retorna 0 se for diretorio
+		//A funçao isFile retorna 0 se for diretorio & 1 para arquivo
 		if( (isdir = isFile(getdir->d_name)) == 0){
 			
 			printf("Diretorio -> %s\n", getdir->d_name);
