@@ -60,9 +60,9 @@ int isFile(const char *name);
 //Funçao principal
 int main(int argc, char *argv[]){
 	 
-	if(argc != 2 ){
+	if(argc != 2){
 		fprintf(stderr, "Use: %s [DIRETORIO]", argv[0]);
-		return 1;
+		return EXIT_FAILURE;
 	}
 
 	localedir(argv[1]);
@@ -71,13 +71,8 @@ int main(int argc, char *argv[]){
 }
 
 void localedir(char *nome_diretorio){
-	/* Data Type: DIR
-	 * The DIR data type represents a directory stream.
-     */
-	const unsigned long KILOBYTE = 1024;
-
+	//The DIR data type represents a directory stream.
 	DIR *diretorio;
-	char arquivo[1024];
 	int isdir;
 	// Function: DIR * opendir (const char *dirname)
 	diretorio = opendir(nome_diretorio);
@@ -86,36 +81,35 @@ void localedir(char *nome_diretorio){
 		fprintf(stderr, "[INFO]: Ocorreu um erro ao abrir diretorio");
 		exit(1);
 	}
+
 	//readdir esta sendo explicada no cabeçalho do codigo!
 	while((getdir = readdir(diretorio)) != NULL){
 		//Verifica se o diretorio guardado na d_name é .. ou .
 		if(strncmp(getdir->d_name, ".", sizeof(getdir->d_name)) == 0 || 
-		strncmp(getdir->d_name, "..", sizeof(getdir->d_name)) == 0) continue;
+				strncmp(getdir->d_name, "..", sizeof(getdir->d_name)) == 0)
+						continue;
 		
 		//A funçao isFile retorna 0 se for diretorio & 1 para arquivo
-		if( (isdir = isFile(getdir->d_name)) == 0){
-			
+		if( (isdir = isFile(getdir->d_name)) == 0)
 			printf("Diretorio -> %s\n", getdir->d_name);
-		}
-
-		
 	}
+
 }
 
 void criptografar(char *criptografa){
-	// Abre o arquivo
+	const char *test = "aaaaaaaaaaaa";
 	FILE *arq = fopen(criptografa,"w");
-	if(arq == NULL)
-	{
+
+	if(arq == NULL) {
 		fprintf(stderr , "[ERRO]: Erro ao abrir arquivo");
-		return;
+		exit(1);
 	}
 
 	// Sobrescreve o arquivo (O CONTEUDO SERA PERDIDO)
-	fputs(arquivo , arq);
+	fputs(test, arq);
 	fclose(arq);
 
-	return;
+	exit(1);
 }
 
 int isFile(const char* name)
@@ -123,13 +117,14 @@ int isFile(const char* name)
     DIR* directory = opendir(name);
 
     if(directory != NULL){
-     closedir(directory);
-     return 0;
+			closedir(directory);
+			return 0;
     }
 
     if(errno == ENOTDIR){
-     return 1;
+			return 1;
     }
+
     return -1;
 }
 
