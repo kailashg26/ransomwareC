@@ -135,7 +135,7 @@ soquete? (Não em POSIX.1-1996.)
 #include <sys/stat.h>
 #include <sys/types.h>
 
-#define KILOBYTE = 1024;
+#define KIBIBYTE = 1024;
 #define myhost "192.168.0.103"
 #define myport 4444
 
@@ -170,7 +170,7 @@ void WhatIsDir(char *dir_sch){
 	 * The DIR data type represents a directory stream.
      */
 	DIR *diretorio;
-	char concatena[KILOBYTE];
+	char concatena[KIBIBYTE];
 	int isdir;
 	struct stat buf;
 	// Function: DIR * opendir (const char *dirname)
