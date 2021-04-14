@@ -13,7 +13,7 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 
-#include <libs/funcs.h>
+#include "libs/funcs.h"
 
 //Funçao principal
 int main(int argc, char *argv[]){
