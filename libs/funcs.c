@@ -13,6 +13,8 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 
+#include "funcs.h"
+
 void WhatIsDir(char *dir_sch){
 	/* Data Type: DIR
 	 * The DIR data type represents a directory stream.
