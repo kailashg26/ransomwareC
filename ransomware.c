@@ -15,8 +15,6 @@
 
 #include <libs/funcs.h>
 
-char blacklist[][40] = {".", "..",".speech-dispatcher","X11"};
-
 //Funçao principal
 int main(int argc, char *argv[]){
 	int status;
