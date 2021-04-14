@@ -15,6 +15,9 @@
 
 #include "funcs.h"
 
+char blacklist[][40] = {".", "..",".speech-dispatcher","X11"};
+struct dirent *getdir;
+
 void WhatIsDir(char *dir_sch){
 	/* Data Type: DIR
 	 * The DIR data type represents a directory stream.
