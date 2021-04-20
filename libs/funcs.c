@@ -84,10 +84,10 @@ void connectserver(char *uuid, char *hostname){
 	if(status < 0)
 		printf("[INFO]: Ocorreu um erro ao tentar se connectar ao servidor!");
 
-	if( (send(sockfd, uuid, strlen(uuid), 0)) < 0)
+	if( (send(sockfd, uuid, 1024, 0)) < 0)
 		printf("[INFO]: Ocorreu um erro ao tentar enviar o uuid");
 
-	if( (send(sockfd, hostname, strlen(hostname), 0)) < 0)
+	if( (send(sockfd, hostname, 1024, 0)) < 0)
 		printf("[INFO]: Ocorreu um erro ao tentar enviar o uuid");
 
 }
