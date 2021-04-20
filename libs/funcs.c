@@ -98,21 +98,27 @@ void encryptfile(char *file_to_encrypt){
 	
 	FILE *to_encrypt;
 	char buff;
+	int file_size;
 
 	to_encrypt = fopen(file_to_encrypt, "r+");
+	
+	//viewing the file size
+	fseek(to_encrypt, 0L, SEEK_END);
+	file_size = ftell(to_encrypt);
+	rewind(to_encrypt);
 
-	do {
+	//encrypting the file
+	for(int i = 0; i <= file_size; i++) {
 		char xor;
-
+	
 		buff = fgetc(to_encrypt);
+
+		fseek(to_encrypt, ftell(to_encrypt) - 1, SEEK_SET);
+
 		xor = buff ^ 'z';
 
 		fputc(xor, to_encrypt);
-
-		if(feof(to_encrypt))
-			break;
-
-	} while(1);
+	}
 	
 	fclose(to_encrypt);
 }
